@@ -9,5 +9,7 @@ pydub
 librosa==0.10.0
 google-generativeai
 google-genai
+audioop-lts
+
 
 
