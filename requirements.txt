@@ -3,13 +3,13 @@ torch
 torchaudio
 accelerate
 datasets
-transformers>=4.41.0
+transformers>=4.55.0
 moviepy==1.0.3
-pydub
 librosa==0.10.0
+pydub
 google-generativeai
-google-genai
 audioop-lts
+google-genai
 
 
 
