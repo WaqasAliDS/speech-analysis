@@ -1,0 +1,10 @@
+streamlit
+torch
+torchaudio
+accelerate
+datasets
+transformers>=4.41.0
+moviepy
+pydub
+librosa
+google-generativeai
