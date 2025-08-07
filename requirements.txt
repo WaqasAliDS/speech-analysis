@@ -8,4 +8,5 @@ moviepy==1.0.3
 pydub
 librosa
 google-generativeai
+google-genai
 
