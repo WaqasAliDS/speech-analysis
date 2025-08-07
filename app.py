@@ -5,7 +5,7 @@ import librosa
 import os
 from pydub import AudioSegment
 from moviepy.editor import VideoFileClip
-# from google import genai
+from google import genai
 import google.generativeai as genai
 from google.genai import types
 
@@ -197,4 +197,5 @@ if uploaded_file is not None:
     if analysis_only:
         st.markdown("### 🧠 Gemini Analysis Summary")
         st.markdown(analysis_only)
+
 
