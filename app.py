@@ -110,59 +110,60 @@ After that, provide your analysis in the following format:
         )
     )
     return response.text
-def analyze_transcript(transcript: str):
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    
+# def analyze_transcript(transcript: str):
+#     client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
-     system_instr = """
-        You are a speech analyst. The following transcription is in Urdu and contains no punctuation — your first task is to correct the transcript by segmenting it into grammatically correct sentences.
+#      system_instr = """
+#         You are a speech analyst. The following transcription is in Urdu and contains no punctuation — your first task is to correct the transcript by segmenting it into grammatically correct sentences.
         
-        Then:
-        1. Translate the corrected Urdu transcript into English.
-        2. Determine whether the transcript involves a single speaker or multiple speakers.
-        3. If multiple speakers are detected, perform diarization by segmenting the transcript with clear speaker labels.
+#         Then:
+#         1. Translate the corrected Urdu transcript into English.
+#         2. Determine whether the transcript involves a single speaker or multiple speakers.
+#         3. If multiple speakers are detected, perform diarization by segmenting the transcript with clear speaker labels.
         
-        ⚠️ Format the segmented transcript *exactly* like this:
+#         ⚠️ Format the segmented transcript *exactly* like this:
         
-        **Segmented Transcript**
+#         **Segmented Transcript**
         
-        **Urdu:**
-        Person 01:
-        [Urdu line here]
+#         **Urdu:**
+#         Person 01:
+#         [Urdu line here]
         
-        Person 02:
-        [Urdu line here]
+#         Person 02:
+#         [Urdu line here]
         
-        ...
+#         ...
         
-        **English:**
-        Person 01:
-        [English line here]
+#         **English:**
+#         Person 01:
+#         [English line here]
         
-        Person 02:
-        [English line here]
+#         Person 02:
+#         [English line here]
         
-        ...
+#         ...
         
-        After that, provide your analysis in the following format:
+#         After that, provide your analysis in the following format:
         
-        **Speaker-wise Analysis**
-        [One or two sentences per speaker about tone, emotion, behavior]
+#         **Speaker-wise Analysis**
+#         [One or two sentences per speaker about tone, emotion, behavior]
         
-        **Sentiment and Communication Style**
-        [Concise overall tone: e.g., friendly, formal, tense, etc.]
+#         **Sentiment and Communication Style**
+#         [Concise overall tone: e.g., friendly, formal, tense, etc.]
         
-        **Summary of Discussion**
-        [A 2–3 line summary of what the speakers talked about, in English]
-        """
-    resp = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[transcript],
-        config=types.GenerateContentConfig(
-            system_instruction=system_instr,
-            temperature=0.0
-        ),
-    )
-    return resp.text
+#         **Summary of Discussion**
+#         [A 2–3 line summary of what the speakers talked about, in English]
+#         """
+#     resp = client.models.generate_content(
+#         model="gemini-2.5-flash",
+#         contents=[transcript],
+#         config=types.GenerateContentConfig(
+#             system_instruction=system_instr,
+#             temperature=0.0
+#         ),
+#     )
+#     return resp.text
 
 # ----------- Format Display Helper -----------
 def format_transcript_block(text: str) -> str:
@@ -250,6 +251,7 @@ if uploaded_file is not None:
     if analysis_only:
         st.markdown("### 🧠 Gemini Analysis Summary")
         st.markdown(analysis_only)
+
 
 
 
