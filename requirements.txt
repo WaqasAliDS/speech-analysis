@@ -7,7 +7,7 @@ transformers>=4.41.0
 moviepy==1.0.3
 imageio-ffmpeg
 pydub
-librosa
+librosa==0.10.2.post1
 soundfile
-google-generativeai
+google-generativeai>=0.7.2
 streamlit-mic-recorder
