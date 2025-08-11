@@ -257,8 +257,9 @@ import io, os, numpy as np, streamlit as st, librosa, torch, soundfile as sf
 from transformers import AutoProcessor, Wav2Vec2ForCTC
 from pydub import AudioSegment
 from moviepy.editor import VideoFileClip
-from google import genai
-from google.genai import types
+# from google import genai
+# from google.genai import types
+import google.generativeai as genai
 
 # ✅ programmatic Start/Stop mic (no WebRTC)
 from streamlit_mic_recorder import mic_recorder
@@ -313,9 +314,10 @@ def transcribe(wav_path) -> str:
         logits = model(**inputs).logits
     pred_ids = torch.argmax(logits, dim=-1)
     return processor.batch_decode(pred_ids)[0]
-
 def analyze_transcript(transcript: str) -> str:
-    client = genai.Client(api_key=api_key)
+    # configure once per run
+    genai.configure(api_key=api_key)
+
     system_instr = """
 You are a speech analyst. The following transcription is in Urdu and contains no punctuation — your first task is to correct the transcript by segmenting it into grammatically correct sentences.
 
@@ -357,12 +359,68 @@ After that, provide your analysis in the following format:
 **Summary of Discussion**
 [A 2–3 line summary of what the speakers talked about, in English]
 """
-    resp = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[transcript],
-        config=types.GenerateContentConfig(system_instruction=system_instr, temperature=0.0)
+
+    # Pick a stable, widely-available model name on Streamlit Cloud
+    model = genai.GenerativeModel(
+        model_name="gemini-2.5-flash",
+        system_instruction=system_instr
+    )
+
+    resp = model.generate_content(
+        transcript,
+        generation_config={"temperature": 0.0}
     )
     return resp.text
+
+# def analyze_transcript(transcript: str) -> str:
+#     client = genai.Client(api_key=api_key)
+#     system_instr = """
+# You are a speech analyst. The following transcription is in Urdu and contains no punctuation — your first task is to correct the transcript by segmenting it into grammatically correct sentences.
+
+# Then:
+# 1. Translate the corrected Urdu transcript into English.
+# 2. Determine whether the transcript involves a single speaker or multiple speakers.
+# 3. If multiple speakers are detected, perform diarization by segmenting the transcript with clear speaker labels.
+
+# ⚠️ Format the segmented transcript *exactly* like this:
+
+# **Segmented Transcript**
+
+# **Urdu:**
+# Person 01:
+# [Urdu line here]
+
+# Person 02:
+# [Urdu line here]
+
+# ...
+
+# **English:**
+# Person 01:
+# [English line here]
+
+# Person 02:
+# [English line here]
+
+# ...
+
+# After that, provide your analysis in the following format:
+
+# **Speaker-wise Analysis**
+# [One or two sentences per speaker about tone, emotion, behavior]
+
+# **Sentiment and Communication Style**
+# [Concise overall tone: e.g., friendly, formal, tense, etc.]
+
+# **Summary of Discussion**
+# [A 2–3 line summary of what the speakers talked about, in English]
+# """
+#     resp = client.models.generate_content(
+#         model="gemini-2.5-flash",
+#         contents=[transcript],
+#         config=types.GenerateContentConfig(system_instruction=system_instr, temperature=0.0)
+#     )
+#     return resp.text
 
 def format_transcript_block(text: str) -> str:
     lines = text.split("Person ")
@@ -511,3 +569,4 @@ if uploaded_file is not None:
     if analysis_only:
         st.markdown("### 🧠 Gemini Analysis Summary")
         st.markdown(analysis_only)
+
